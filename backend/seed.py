@@ -22,7 +22,7 @@ def seed_database():
         # Lightweight migration for databases created before the photo column existed
         with db.engine.connect() as conn:
             cols = conn.execute(db.text(
-                "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS "
+                "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS "
                 "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'students'"
             )).fetchall()
             col_types = {c[0]: str(c[1]).lower() for c in cols}
