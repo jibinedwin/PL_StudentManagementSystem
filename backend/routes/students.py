@@ -1,8 +1,8 @@
 import re
 from flask import Blueprint, request, jsonify, session
 from extensions import db
-from models import Student, User, Course, Department
-from auth_utils import admin_required
+from models import Student, User, Course, Department, Attendance
+from auth_utils import admin_required, student_required
 
 students_bp = Blueprint('students', __name__)
 
@@ -407,4 +407,46 @@ def get_student_profile():
     return jsonify({
         'status': 'success',
         'student': student.to_dict(include_password=False)
+    }), 200
+
+
+# ============================================================
+# 9. STUDENT OWN ATTENDANCE RECORD (STUDENT MODULE)
+# ============================================================
+@students_bp.route('/student/attendance', methods=['GET'])
+@student_required
+def get_my_attendance():
+    """
+    Returns the logged-in student's own attendance records
+    (one row per marked day: date + Present/Absent) with a summary.
+    """
+    user = User.query.get(session.get('user_id'))
+    if not user:
+        return jsonify({'status': 'error', 'message': 'User session not found.'}), 401
+
+    student = user.student
+    if not student:
+        return jsonify({'status': 'error', 'message': 'No student record is linked to this account.'}), 404
+
+    records = Attendance.query.filter_by(student_row_id=student.id) \
+        .order_by(Attendance.attendance_date.desc()).all()
+
+    present_count = sum(1 for r in records if r.status == 'Present')
+    absent_count = len(records) - present_count
+
+    return jsonify({
+        'status': 'success',
+        'summary': {
+            'present': present_count,
+            'absent': absent_count,
+            'total': len(records)
+        },
+        'attendance': [
+            {
+                'date': r.attendance_date.strftime('%Y-%m-%d') if r.attendance_date else '',
+                'status': r.status,
+                'course': (r.course.name if r.course else (student.course or ''))
+            }
+            for r in records
+        ]
     }), 200

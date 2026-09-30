@@ -337,6 +337,81 @@
   margin-top: 4px;
 }
 
+/* ==========================================================================
+   ACADEMICS SECTION (MY ATTENDANCE RECORD)
+   ========================================================================== */
+.attendance-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.attendance-summary-card {
+  background: hsla(0, 0%, 100%, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid hsla(0, 0%, 100%, 0.12);
+  border-radius: 0.75rem;
+  padding: 18px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.attendance-summary-card.present {
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.attendance-summary-card.absent {
+  border-color: rgba(239, 83, 80, 0.4);
+}
+
+.attendance-summary-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.attendance-summary-card.present .attendance-summary-value {
+  color: #81c784;
+}
+
+.attendance-summary-card.absent .attendance-summary-value {
+  color: #e57373;
+}
+
+.attendance-summary-label {
+  font-size: 12px;
+  color: hsla(0, 0%, 100%, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.attendance-table-container {
+  overflow-x: auto;
+  border: 1px solid hsla(0, 0%, 100%, 0.12);
+  border-radius: 0.75rem;
+}
+
+.attendance-table-container .data-table th {
+  background-color: hsla(220, 45%, 14%, 0.7);
+}
+
+.no-attendance-msg {
+  text-align: center;
+  padding: 30px 20px;
+  color: hsla(0, 0%, 100%, 0.65);
+}
+
+.no-attendance-msg i {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 10px;
+  color: var(--accent-blue, #64b5f6);
+}
+
 /* Inline toast notifications (matches admin portal styling) */
 .alert-toast {
   position: fixed;

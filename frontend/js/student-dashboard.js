@@ -125,6 +125,73 @@ async function loadStudentDashboard() {
   if (quickId) quickId.textContent = student.studentId;
   const quickAdm = document.getElementById('dashQuickAdmission');
   if (quickAdm) quickAdm.textContent = student.admissionDate || 'N/A';
+
+  // Load attendance records (Academics section)
+  loadStudentAttendance();
+}
+
+/* =============== ACADEMICS SECTION: MY ATTENDANCE RECORD =============== */
+async function loadStudentAttendance() {
+  const tbody = document.getElementById('studentAttendanceTableBody');
+  const noData = document.getElementById('noStudentAttendance');
+  if (!tbody) return;
+
+  tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 18px; color: hsla(0,0%,100%,0.7);"><i class="ri-loader-4-line"></i> Loading attendance...</td></tr>`;
+
+  try {
+    const res = await api.getMyAttendance();
+    if (res && res.status === 'success') {
+      const summary = res.summary || { present: 0, absent: 0, total: 0 };
+      const records = res.attendance || [];
+
+      // Summary cards
+      const presentEl = document.getElementById('attendancePresentCount');
+      const absentEl = document.getElementById('attendanceAbsentCount');
+      const totalEl = document.getElementById('attendanceTotalCount');
+      if (presentEl) presentEl.textContent = summary.present || 0;
+      if (absentEl) absentEl.textContent = summary.absent || 0;
+      if (totalEl) totalEl.textContent = summary.total || 0;
+
+      if (records.length === 0) {
+        tbody.innerHTML = '';
+        if (noData) noData.style.display = 'block';
+        return;
+      }
+      if (noData) noData.style.display = 'none';
+
+      tbody.innerHTML = records.map(r => `
+        <tr>
+          <td>${escapeHtmlStudent(formatAttendanceDate(r.date))}</td>
+          <td>
+            <span class="status-pill ${r.status === 'Present' ? 'status-active' : 'status-inactive'}">${escapeHtmlStudent(r.status)}</span>
+          </td>
+          <td>${escapeHtmlStudent(r.course || 'N/A')}</td>
+        </tr>
+      `).join('');
+    } else {
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 18px; color:#ef5350;">${escapeHtmlStudent(res.message || 'Failed to load attendance.')}</td></tr>`;
+    }
+  } catch (err) {
+    console.warn('Could not load attendance records:', err);
+    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 18px; color:#ef5350;">Could not load attendance records.</td></tr>`;
+  }
+}
+
+function formatAttendanceDate(dateStr) {
+  if (!dateStr) return 'N/A';
+  const d = new Date(`${dateStr}T00:00:00`);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function escapeHtmlStudent(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 /* Section Switching (Dashboard vs Academics vs Personal Info vs Security) */

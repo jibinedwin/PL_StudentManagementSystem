@@ -202,5 +202,39 @@ const api = {
       body: JSON.stringify({ oldPassword, newPassword })
     });
     return res.json();
+  },
+
+  // Attendance
+  getMyAttendance: async () => {
+    const res = await fetch(`${API_BASE_URL}/student/attendance`, {
+      credentials: 'include'
+    });
+    return res.json();
+  },
+
+  getAttendanceCourses: async () => {
+    const res = await fetch(`${API_BASE_URL}/attendance/courses`, {
+      credentials: 'include'
+    });
+    return res.json();
+  },
+
+  getCourseStudents: async (courseId, date) => {
+    const params = new URLSearchParams();
+    if (date) params.set('date', date);
+    const res = await fetch(`${API_BASE_URL}/attendance/courses/${courseId}/students?${params.toString()}`, {
+      credentials: 'include'
+    });
+    return res.json();
+  },
+
+  markAttendance: async (courseId, records, date) => {
+    const res = await fetch(`${API_BASE_URL}/attendance`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ courseId, date, records })
+    });
+    return res.json();
   }
 };

@@ -7,6 +7,7 @@ let allStudents = [];
 let allCourses = [];
 let allUsers = [];
 let selectedStudentPhoto = null; // Base64 data URL of the chosen profile photo
+let currentAttendanceCourse = null; // Course selected in the Attendance section
 
 document.addEventListener('DOMContentLoaded', async () => {
   const user = Auth.requireRole('admin');
@@ -36,6 +37,7 @@ function switchSection(sectionName) {
     dashboard: document.getElementById('dashboardSection'),
     students: document.getElementById('studentsSection'),
     courses: document.getElementById('coursesSection'),
+    attendance: document.getElementById('attendanceSection'),
     users: document.getElementById('usersSection')
   };
 
@@ -59,6 +61,8 @@ function switchSection(sectionName) {
     loadStudents();
   } else if (sectionName === 'courses') {
     loadCourses();
+  } else if (sectionName === 'attendance') {
+    showAttendanceCourses();
   } else if (sectionName === 'users') {
     renderUsersTable();
   }
@@ -124,7 +128,7 @@ async function loadRecentAdmissions() {
       list.innerHTML = recent.map(s => `
         <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.06);">
           <div>
-            <div style="font-weight: 600; color: #fff;">${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)} <span style="font-size: 12px; color: #64b5f6; margin-left: 6px;">${escapeHtml(s.studentId)}</span></div>
+            <div style="font-weight: 600; color: #fff;">${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)} <span style="font-size: 12px; color: #fff; margin-left: 6px;">${escapeHtml(s.studentId)}</span></div>
             <div style="font-size: 12px; color: hsla(0,0%,100%,0.6); margin-top: 2px;">${escapeHtml(s.course || 'No course assigned')} • Admitted: ${escapeHtml(s.admissionDate || 'N/A')}</div>
           </div>
           <div style="display: flex; align-items: center;">
@@ -574,6 +578,164 @@ function confirmDeleteStudent(studentId, name) {
       }
     }
   );
+}
+
+// ==========================================================================
+// 3.5 ATTENDANCE SECTION (Courses -> Enrolled Students -> Mark Present/Absent)
+// ==========================================================================
+async function showAttendanceCourses() {
+  const courseView = document.getElementById('attendanceCourseView');
+  const studentView = document.getElementById('attendanceStudentView');
+  if (courseView) courseView.style.display = 'block';
+  if (studentView) studentView.style.display = 'none';
+  currentAttendanceCourse = null;
+  await loadAttendanceCourses();
+}
+
+async function loadAttendanceCourses() {
+  const tbody = document.getElementById('attendanceCourseTableBody');
+  const noData = document.getElementById('noAttendanceCourses');
+  if (!tbody) return;
+
+  tbody.innerHTML = `<tr><td colspan="5" class="loading-state" style="text-align:center; padding: 20px;"><i class="ri-loader-4-line"></i> Loading courses...</td></tr>`;
+
+  try {
+    const res = await api.getAttendanceCourses();
+    if (res && res.status === 'success') {
+      const courses = res.courses || [];
+
+      if (courses.length === 0) {
+        tbody.innerHTML = '';
+        if (noData) noData.style.display = 'block';
+        return;
+      }
+      if (noData) noData.style.display = 'none';
+
+      tbody.innerHTML = courses.map(c => `
+        <tr>
+          <td><strong style="color: #fff;">${escapeHtml(c.name)}</strong></td>
+          <td>${escapeHtml(c.duration || '4 Years')}</td>
+          <td>${escapeHtml(c.departmentName || 'General')}</td>
+          <td><span class="badge">${c.enrolledCount || 0}</span></td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn btn-action btn-view" title="Mark Attendance" onclick="openAttendanceStudents(${c.id}, '${escapeHtml(c.name).replace(/'/g, "\\'")}')">
+                Mark Attendance
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    } else {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#ef5350; padding: 20px;">${escapeHtml(res.message || 'Failed to load courses.')}</td></tr>`;
+    }
+  } catch (err) {
+    console.error('Error loading attendance courses:', err);
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#ef5350; padding: 20px;">Error loading courses.</td></tr>`;
+  }
+}
+
+async function openAttendanceStudents(courseId, courseName) {
+  currentAttendanceCourse = { id: courseId, name: courseName };
+
+  const courseView = document.getElementById('attendanceCourseView');
+  const studentView = document.getElementById('attendanceStudentView');
+  if (courseView) courseView.style.display = 'none';
+  if (studentView) studentView.style.display = 'block';
+
+  const title = document.getElementById('attendanceCourseTitle');
+  if (title) title.textContent = `Attendance - ${courseName}`;
+
+  // Default the date picker to today
+  const dateInput = document.getElementById('attendanceDate');
+  if (dateInput && !dateInput.value) {
+    dateInput.value = new Date().toISOString().split('T')[0];
+  }
+
+  await loadAttendanceStudents();
+}
+
+async function loadAttendanceStudents() {
+  if (!currentAttendanceCourse) return;
+
+  const tbody = document.getElementById('attendanceStudentTableBody');
+  const noData = document.getElementById('noAttendanceStudents');
+  if (!tbody) return;
+
+  const dateInput = document.getElementById('attendanceDate');
+  const date = dateInput ? dateInput.value : '';
+
+  tbody.innerHTML = `<tr><td colspan="4" class="loading-state" style="text-align:center; padding: 20px;"><i class="ri-loader-4-line"></i> Loading enrolled students...</td></tr>`;
+
+  try {
+    const res = await api.getCourseStudents(currentAttendanceCourse.id, date);
+    if (res && res.status === 'success') {
+      const students = res.students || [];
+
+      if (students.length === 0) {
+        tbody.innerHTML = '';
+        if (noData) noData.style.display = 'block';
+        return;
+      }
+      if (noData) noData.style.display = 'none';
+
+      tbody.innerHTML = students.map(s => `
+        <tr>
+          <td>${escapeHtml(s.studentId)}</td>
+          <td>${escapeHtml(s.fullName)}</td>
+          <td>
+            <span class="status-pill ${s.status === 'Active' ? 'status-active' : 'status-inactive'}">${escapeHtml(s.status)}</span>
+          </td>
+          <td>
+            <div class="attendance-buttons">
+              <button class="btn btn-attendance ${s.attendanceStatus === 'Present' ? 'btn-present active' : 'btn-present'}"
+                      onclick="markAttendanceFor(${s.id}, 'Present')">
+                <i class="ri-check-line"></i> Present
+              </button>
+              <button class="btn btn-attendance ${s.attendanceStatus === 'Absent' ? 'btn-absent active' : 'btn-absent'}"
+                      onclick="markAttendanceFor(${s.id}, 'Absent')">
+                <i class="ri-close-line"></i> Absent
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    } else {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef5350; padding: 20px;">${escapeHtml(res.message || 'Failed to load students.')}</td></tr>`;
+    }
+  } catch (err) {
+    console.error('Error loading attendance students:', err);
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ef5350; padding: 20px;">Error loading students.</td></tr>`;
+  }
+}
+
+async function markAttendanceFor(studentRowId, status) {
+  if (!currentAttendanceCourse) return;
+
+  const dateInput = document.getElementById('attendanceDate');
+  const date = dateInput ? dateInput.value : '';
+
+  try {
+    const res = await api.markAttendance(currentAttendanceCourse.id, [{ studentRowId, status }], date || undefined);
+    if (res && res.status === 'success') {
+      // Optimistically update the button highlight without a full reload
+      const row = document.querySelector(`button[onclick="markAttendanceFor(${studentRowId}, 'Present')"]`);
+      const rowPresent = row ? row.closest('tr') : null;
+      if (rowPresent) {
+        const presentBtn = rowPresent.querySelector('.btn-present');
+        const absentBtn = rowPresent.querySelector('.btn-absent');
+        if (presentBtn && absentBtn) {
+          presentBtn.classList.toggle('active', status === 'Present');
+          absentBtn.classList.toggle('active', status === 'Absent');
+        }
+      }
+    } else {
+      Common.showToast(res.message || 'Failed to mark attendance.', 'error');
+    }
+  } catch (err) {
+    console.error('Mark attendance error:', err);
+    Common.showToast('Could not mark attendance. Please try again.', 'error');
+  }
 }
 
 // ==========================================================================

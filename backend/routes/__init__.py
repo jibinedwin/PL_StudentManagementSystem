@@ -5,6 +5,7 @@ from routes.students import students_bp
 from routes.departments import departments_bp
 from routes.users import users_bp
 from routes.profile import profile_bp
+from routes.attendance import attendance_bp
 
 __all__ = [
     'auth_bp',
@@ -12,5 +13,6 @@ __all__ = [
     'students_bp',
     'departments_bp',
     'users_bp',
-    'profile_bp'
+    'profile_bp',
+    'attendance_bp'
 ]

@@ -84,6 +84,12 @@
           </ul>
         </div>
 
+        <!-- Attendance Link -->
+        <a href="javascript:void(0)" class="sidebar__link" onclick="switchSection('attendance')">
+          <i class="ri-calendar-check-line"></i>
+          <span>Attendance</span>
+        </a>
+
         <!-- Users Link -->
         <a href="javascript:void(0)" class="sidebar__link" onclick="switchSection('users')">
           <i class="ri-user-settings-line"></i>
@@ -286,6 +292,78 @@
           </div>
         </section>
       </div>
+      <!-- SECTION 4: ATTENDANCE -->
+      <div id="attendanceSection" style="display: none;">
+        <!-- Course list view -->
+        <div id="attendanceCourseView">
+          <section class="top-bar">
+            <div>
+              <h2>Attendance</h2>
+              <p class="subtitle">Pick a course to view enrolled students and mark attendance</p>
+            </div>
+          </section>
+
+          <section class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Duration</th>
+                  <th>Department</th>
+                  <th>Enrolled Students</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceCourseTableBody">
+                <!-- Populated dynamically via dashboard.js -->
+              </tbody>
+            </table>
+            <div id="noAttendanceCourses" class="empty-state" style="display: none;">
+              <i class="ri-book-open-line"></i>
+              <h4>No courses found</h4>
+              <p>Add a course first to start marking attendance.</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- Student list view (shown when a course is selected) -->
+        <div id="attendanceStudentView" style="display: none;">
+          <section class="top-bar">
+            <div>
+              <h2 id="attendanceCourseTitle">Course Attendance</h2>
+              <p class="subtitle" id="attendanceCourseSubtitle">Students enrolled in this course</p>
+            </div>
+            <div class="top-actions-group">
+              <input type="date" id="attendanceDate" class="attendance-date-input" onchange="loadAttendanceStudents()" />
+              <button class="btn btn-outline-dark" onclick="showAttendanceCourses()">
+                <i class="ri-arrow-left-line"></i> Back to Courses
+              </button>
+            </div>
+          </section>
+
+          <section class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Name</th>
+                  <th>Enrollment Status</th>
+                  <th>Attendance</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceStudentTableBody">
+                <!-- Populated dynamically via dashboard.js -->
+              </tbody>
+            </table>
+            <div id="noAttendanceStudents" class="empty-state" style="display: none;">
+              <i class="ri-user-follow-line"></i>
+              <h4>No students enrolled</h4>
+              <p>No students are currently enrolled in this course.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
     </main>
   </div> <!-- /.main-wrapper -->
 

@@ -5,7 +5,8 @@ import os
 
 from config import Config
 from extensions import db, bcrypt
-from routes import auth_bp, dashboard_bp, students_bp, departments_bp, users_bp, profile_bp
+from routes import (auth_bp, dashboard_bp, students_bp, departments_bp, users_bp,
+                    profile_bp, attendance_bp)
 
 # Frontend folder lives one level above the backend folder
 FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
@@ -64,6 +65,14 @@ def create_app(config_class=Config):
     app.register_blueprint(departments_bp, url_prefix='/api')
     app.register_blueprint(users_bp, url_prefix='/api')
     app.register_blueprint(profile_bp, url_prefix='/api')
+    app.register_blueprint(attendance_bp, url_prefix='/api')
+
+    # Create any tables not yet in the DB (e.g. the new attendance table)
+    with app.app_context():
+        try:
+            db.create_all()
+        except Exception as e:
+            print(f"  [migrate] Skipped table creation: {e}")
 
     # ------------------------------------------------------------------
     # Serve the frontend (same origin => no CORS issues, session cookies
@@ -115,7 +124,13 @@ def create_app(config_class=Config):
                     'POST /api/courses'
                 ],
                 'users': ['GET /api/users', 'POST /api/users'],
-                'profile': ['GET /api/profile', 'PUT /api/profile/password']
+                'profile': ['GET /api/profile', 'PUT /api/profile/password'],
+                'attendance': [
+                    'GET /api/attendance/courses',
+                    'GET /api/attendance/courses/<id>/students?date=YYYY-MM-DD',
+                    'GET /api/attendance?course_id=<id>&date=YYYY-MM-DD',
+                    'POST /api/attendance (mark Present/Absent)'
+                ]
             }
         })
 

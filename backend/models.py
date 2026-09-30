@@ -88,6 +88,34 @@ class Course(db.Model):
         }
 
 
+class Attendance(db.Model):
+    """
+    Attendance record for a student on a specific date.
+    One row per (student, date) — 'Present' or 'Absent' — regardless of course.
+    """
+    __tablename__ = 'attendance'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    student_row_id = db.Column(db.Integer, db.ForeignKey('students.id', ondelete='CASCADE'), nullable=False, index=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id', ondelete='SET NULL'), nullable=True)
+    attendance_date = db.Column(db.Date, nullable=False, index=True)
+    status = db.Column(db.String(10), nullable=False, default='Present')  # 'Present' or 'Absent'
+    marked_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    student = db.relationship('Student', backref='attendance_records')
+    course = db.relationship('Course')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'studentRowId': self.student_row_id,
+            'studentId': self.student.student_id if self.student else '',
+            'courseId': self.course_id,
+            'date': self.attendance_date.strftime('%Y-%m-%d') if self.attendance_date else '',
+            'status': self.status
+        }
+
+
 class Student(db.Model):
     """
     Student model containing student personal, academic and contact details.

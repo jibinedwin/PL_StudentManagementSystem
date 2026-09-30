@@ -15,7 +15,7 @@ A full-stack Student Management System with a **Flask + MySQL** backend and a pl
 │   ├── config.py           # Loads .env, builds MySQL URI
 │   ├── extensions.py       # SQLAlchemy (db) & Bcrypt singletons
 │   ├── auth_utils.py       # login_required / admin_required / student_required decorators
-│   ├── models.py           # User, Department, Course, Student models
+│   ├── models.py           # User, Department, Course, Student, Attendance models
 │   ├── seed.py             # One-time DB seeder (tables, admin, courses, students)
 │   ├── requirements.txt
 │   ├── .env                # DB credentials & SECRET_KEY (not committed)
@@ -26,6 +26,7 @@ A full-stack Student Management System with a **Flask + MySQL** backend and a pl
 │       ├── students.py     # CRUD /api/students, status, password, student profile
 │       ├── departments.py  # /api/departments, /api/courses
 │       ├── users.py        # /api/users (admin credential management)
+│       ├── attendance.py   # /api/attendance (course list, enrolled students, mark Present/Absent)
 │       └── profile.py      # GET/PUT /api/profile, /api/profile/password
 │
 └── frontend/
@@ -109,3 +110,7 @@ The API lives under **http://localhost:5000/api**.
 | `/api/users` | GET/POST | Admin | User accounts |
 | `/api/profile` | GET | Any | Logged-in profile |
 | `/api/profile/password` | PUT | Any | Change own password |
+| `/api/attendance/courses` | GET | Admin | Courses with enrolled counts (Attendance section) |
+| `/api/attendance/courses/<id>/students` | GET | Admin | Students enrolled in a course + attendance for a date |
+| `/api/attendance` | GET | Admin | Saved attendance rows (course_id, date filters) |
+| `/api/attendance` | POST | Admin | Mark students Present/Absent for a date (upsert) |
