@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Student Management</title>
+  <link rel="stylesheet" href="css/layout.css?v=3" />
+  <link rel="stylesheet" href="css/components.css?v=3" />
+  <link rel="stylesheet" href="css/forms.css?v=7" />
+  <link rel="stylesheet" href="css/tables.css?v=2" />
+  <link rel="stylesheet" href="css/dashboard.css?v=13" />
+  <link rel="stylesheet" href="css/responsive.css?v=3" />
+  <!-- Remix Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+  <!-- Boxicons for legacy icons -->
+  <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="dashboard-body">
+  <!-- Background Image for Glass Look -->
+  <img src="assets/img/mountain-bg.png" alt="background" class="image-bg" />
+
+  <!-- Glass Top Header -->
+  <header class="header">
+    <div class="header__container">
+      <div class="header__logo">
+        <img src="assets/img/admin-logo.jpg?v=4" alt="Admin Logo" class="admin-logo-img" />
+        <span>Admin Portal</span>
+      </div>
+
+      <button class="header__toggle" id="header-toggle" aria-label="Toggle sidebar">
+        <i class="ri-menu-line"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Responsive Glass Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar__container">
+      <div class="sidebar__logo">
+        <img src="assets/img/admin-logo.jpg?v=4" alt="Admin Logo" class="admin-logo-img" />
+        <span>Admin Portal</span>
+      </div>
+
+      <div class="sidebar__content">
+        <!-- Dashboard Link -->
+        <a href="javascript:void(0)" class="sidebar__link active" onclick="switchSection('dashboard')">
+          <i class="ri-dashboard-horizontal-line"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <!-- Students Dropdown -->
+        <div class="drop">
+          <button class="sidebar__link drop__button" type="button">
+            <i class="ri-user-follow-line"></i>
+            <span>Students</span>
+            <i class="ri-arrow-down-s-line drop__arrow"></i>
+          </button>
+          
+          <ul class="drop__list">
+            <li>
+              <a href="javascript:void(0)" class="drop__item" onclick="switchSection('students')">View Students</a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" class="drop__item" onclick="openAddModal()">Add Student</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Courses Dropdown -->
+        <div class="drop">
+          <button class="sidebar__link drop__button" type="button">
+            <i class="ri-book-open-line"></i>
+            <span>Courses</span>
+            <i class="ri-arrow-down-s-line drop__arrow"></i>
+          </button>
+          
+          <ul class="drop__list">
+            <li>
+              <a href="javascript:void(0)" class="drop__item" onclick="switchSection('courses')">View Courses</a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" class="drop__item" onclick="openCourseModal()">Add Course</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Users Link -->
+        <a href="javascript:void(0)" class="sidebar__link" onclick="switchSection('users')">
+          <i class="ri-user-settings-line"></i>
+          <span>Users</span>
+        </a>
+      </div>
+
+      <!-- Sidebar Bottom / Footer -->
+      <div class="sidebar__footer">
+        <div class="sidebar__profile">
+          <i class="ri-user-3-line"></i>
+          <span class="admin-name" id="adminGreeting">Admin</span>
+        </div>
+        <button class="sidebar__logout" onclick="logout()">
+          <i class="ri-logout-box-r-line"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <div class="main-wrapper">
+    <main class="container">
+      <!-- SECTION 0: DASHBOARD (OVERVIEW) -->
+      <div id="dashboardSection">
+        <section class="top-bar">
+          <div>
+            <h2>Admin Overview Dashboard</h2>
+            <p class="subtitle">System statistics, recent admissions, and quick management links</p>
+          </div>
+        </section>
+
+        <!-- Quick Statistics Overview -->
+        <section class="stats-overview">
+          <div class="stat-card">
+            <div class="stat-icon icon-students">
+              <img src="assets/img/total-student-icon.jpg" alt="Total Students" class="stat-icon-img" />
+            </div>
+            <div class="stat-details">
+              <span class="stat-value" id="statTotalStudents">0</span>
+              <span class="stat-label">Total Students</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-active">🟢</div>
+            <div class="stat-details">
+              <span class="stat-value" id="statActiveStudents">0</span>
+              <span class="stat-label">Active Students</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-inactive">🔴</div>
+            <div class="stat-details">
+              <span class="stat-value" id="statInactiveStudents">0</span>
+              <span class="stat-label">Inactive Students</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-courses">
+              <img src="assets/img/total-course-icon.jpg" alt="Total Courses" class="stat-icon-img" />
+            </div>
+            <div class="stat-details">
+              <span class="stat-value" id="statTotalCourses">0</span>
+              <span class="stat-label">Total Courses</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Overview Panels Grid -->
+        <div class="cards-grid" style="margin-top: 15px;">
+          <!-- Recently Enrolled Students Panel -->
+          <div class="panel-card single-panel">
+            <div class="panel-header">
+              <h3>Recently Enrolled Students</h3>
+              <button class="btn btn-sm btn-outline-dark" onclick="switchSection('students')">View All Students</button>
+            </div>
+            <div class="panel-content">
+              <ul id="recentStudentsList" class="item-list">
+                <!-- Populated dynamically via dashboard.js -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 1: STUDENTS -->
+      <div id="studentsSection" style="display: none;">
+        <section class="top-bar">
+          <div>
+            <h2>Student Records</h2>
+            <p class="subtitle">Manage, view, and organize student admissions</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddModal()">+ Add New Student</button>
+        </section>
+
+        <!-- Search & Filter Controls -->
+        <section class="controls-card">
+          <div class="search-box">
+            <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Search by ID, Name, Course, or Address..." 
+              oninput="applyFilterAndSearch()" 
+            />
+          </div>
+          <div class="filter-group">
+            <select id="courseFilter" onchange="applyFilterAndSearch()">
+              <option value="">All Courses</option>
+            </select>
+            <select id="statusFilter" onchange="applyFilterAndSearch()">
+              <option value="">All Statuses</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+          </div>
+        </section>
+
+        <!-- Students Table View -->
+        <section class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Course</th>
+                <th>Admission Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <!-- Populated dynamically via dashboard.js -->
+            </tbody>
+          </table>
+          <div id="noDataMessage" class="no-data" style="display: none;">
+            No students found.
+          </div>
+        </section>
+      </div>
+
+      <!-- SECTION 2: COURSES -->
+      <div id="coursesSection" style="display: none;">
+        <section class="top-bar">
+          <div>
+            <h2>Courses Management</h2>
+            <p class="subtitle">Manage courses and degree programs</p>
+          </div>
+          <div class="top-actions-group">
+            <button class="btn btn-primary" onclick="openCourseModal()">+ Add Course</button>
+          </div>
+        </section>
+
+        <!-- Courses Card View -->
+        <div class="panel-card single-panel">
+          <div class="panel-header">
+            <h3>Available Courses</h3>
+            <span class="badge" id="courseCount">0</span>
+          </div>
+          <div class="panel-content">
+            <ul id="courseList" class="item-list">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: USERS -->
+      <div id="usersSection" style="display: none;">
+        <section class="top-bar">
+          <div>
+            <h2>Users Management</h2>
+            <p class="subtitle">View and manage login credentials for registered students</p>
+          </div>
+          <div class="top-actions-group">
+            <button class="btn btn-outline-dark" onclick="renderUsersTable()"><i class='bx bx-refresh'></i> Refresh List</button>
+          </div>
+        </section>
+
+        <!-- User Accounts Table View -->
+        <section class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Student ID / Username</th>
+                <th>Full Name</th>
+                <th>Email Address</th>
+                <th>Password</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <!-- Populated dynamically via dashboard.js -->
+            </tbody>
+          </table>
+          <div id="noUsersMessage" class="no-data" style="display: none;">
+            No student user accounts found.
+          </div>
+        </section>
+      </div>
+    </main>
+  </div> <!-- /.main-wrapper -->
+
+  <!-- Add / Edit Student Modal -->
+  <div id="studentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add New Student</h3>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="studentForm" onsubmit="handleFormSubmit(event)">
+        <input type="hidden" id="editIndex" value="" />
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="studentId">Student ID</label>
+            <input type="text" id="studentId" name="studentId" readonly />
+          </div>
+          <div class="form-group">
+            <label for="admissionDate">Admission Date *</label>
+            <input type="date" id="admissionDate" name="admissionDate" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" name="firstName" placeholder="Enter first name" required />
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" name="lastName" placeholder="Enter last name" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dob">Date of Birth *</label>
+            <input type="date" id="dob" name="dob" required />
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender *</label>
+            <select id="gender" name="gender" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" placeholder="Enter email address" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Mobile Number *</label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter mobile number" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="course">Course Selection *</label>
+            <select id="course" name="course" required>
+              <option value="">Select Course</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="status">Status *</label>
+            <select id="status" name="status" required>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address *</label>
+          <textarea id="address" name="address" rows="3" placeholder="Enter address" required></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="studentPhoto">Student Profile Photo</label>
+          <div class="photo-upload-row">
+            <img id="photoPreview" class="photo-preview" src="" alt="" style="display: none;" />
+            <div class="photo-preview-placeholder" id="photoPlaceholder"><i class="ri-image-add-line"></i></div>
+            <div class="photo-upload-controls">
+              <input type="file" id="studentPhoto" name="studentPhoto" accept="image/png, image/jpeg, image/jpg, image/webp" onchange="handlePhotoSelect(event)" />
+              <button type="button" class="btn btn-secondary btn-sm" id="removePhotoBtn" style="display: none;" onclick="clearPhotoSelection()">Remove Photo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Single Student Details Modal -->
+  <div id="viewModal" class="modal">
+    <div class="modal-content wide-modal">
+      <div class="modal-header">
+        <h3>Student Details</h3>
+        <button class="close-btn" onclick="closeViewModal()">&times;</button>
+      </div>
+      <div class="details-body" id="viewDetailsBody">
+        <!-- Injected dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeViewModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Course Modal -->
+  <div id="courseModal" class="modal">
+    <div class="modal-content small-modal">
+      <div class="modal-header">
+        <h3 id="courseModalTitle">Add New Course</h3>
+        <button class="close-btn" onclick="closeCourseModal()">&times;</button>
+      </div>
+      <form id="courseForm" onsubmit="handleCourseSubmit(event)">
+        <input type="hidden" id="editCourseIndex" value="" />
+        <div class="modal-padding">
+          <div class="form-group">
+            <label for="courseNameInput">Course Name *</label>
+            <input type="text" id="courseNameInput" placeholder="Enter course name" required />
+          </div>
+          <div class="form-group">
+            <label for="courseDurationInput">Course Duration</label>
+            <input type="text" id="courseDurationInput" placeholder="Enter course duration (e.g. 4 Years)" value="4 Years" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeCourseModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveCourseBtn">Add Course</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Change Student Password Modal -->
+  <div id="changePasswordModal" class="modal">
+    <div class="modal-content small-modal">
+      <div class="modal-header">
+        <h3>Change Password</h3>
+        <button class="close-btn" onclick="closeChangePasswordModal()">&times;</button>
+      </div>
+      <form id="changePasswordForm" onsubmit="handleChangePasswordSubmit(event)">
+        <input type="hidden" id="cpStudentId" value="" />
+        <div class="modal-padding">
+          <p style="margin: 0 0 16px 0; color: hsla(0,0%,100%,0.75); font-size: 14px;">
+            Set a new login password for <strong id="cpStudentName" style="color:#fff;">student</strong>.
+          </p>
+          <div class="form-group">
+            <label for="cpNewPassword">New Password *</label>
+            <input type="password" id="cpNewPassword" placeholder="Enter new password (min 6 characters)" required minlength="6" />
+          </div>
+          <div class="form-group">
+            <label for="cpConfirmPassword">Confirm New Password *</label>
+            <input type="password" id="cpConfirmPassword" placeholder="Re-enter new password" required minlength="6" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeChangePasswordModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="cpSaveBtn">Save New Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="assets/js/api.js?v=4"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/common.js?v=2"></script>
+  <script src="js/dashboard.js?v=17"></script>
+</body>
+</html>

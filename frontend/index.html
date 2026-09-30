@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- ===== CSS ===== -->
+        <link rel="stylesheet" href="assets/css/styles.css?v=2">
+
+        <!-- ===== BOX ICONS ===== -->
+        <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+
+        <title>Student Management System - Login</title>  
+    </head>
+    <body>
+        <div class="l-form">
+            <div class="shape1"></div>
+            <div class="shape2"></div>
+
+            <div class="form">
+                <img src="assets/img/authentication.svg" alt="Authentication" class="form__img">
+
+                <form onsubmit="handleLogin(event)" class="form__content">
+                    <h1 class="form__title">Welcome</h1>
+
+                    <!-- Admin / Student Role Selector -->
+                    <div class="role-tabs">
+                        <button type="button" id="adminTab" class="role-tab active" onclick="switchRole('admin')">Admin</button>
+                        <button type="button" id="studentTab" class="role-tab" onclick="switchRole('student')">Student</button>
+                    </div>
+
+                    <!-- Inline Error Alert Banner -->
+                    <div id="loginError" class="login-error-banner" style="display: none;"></div>
+
+                    <div class="form__div form__div-one">
+                        <div class="form__icon">
+                            <i class='bx bx-user-circle'></i>
+                        </div>
+
+                        <div class="form__div-input">
+                            <label for="userInput" class="form__label" id="usernameLabel">Admin Username</label>
+                            <input type="text" id="userInput" class="form__input" required autocomplete="username">
+                        </div>
+                    </div>
+
+                    <div class="form__div">
+                        <div class="form__icon">
+                            <i class='bx bx-lock' ></i>
+                        </div>
+
+                        <div class="form__div-input">
+                            <label for="passInput" class="form__label">Password</label>
+                            <input type="password" id="passInput" class="form__input" required autocomplete="current-password">
+                        </div>
+                    </div>
+
+                    <input type="submit" class="form__button" id="loginButton" value="Login as Admin">
+                </form>
+            </div>
+        </div>
+        
+        <!-- ===== API & MAIN JS ===== -->
+        <script src="assets/js/api.js?v=4"></script>
+        <script src="assets/js/main.js?v=2"></script>
+    </body>
+</html>

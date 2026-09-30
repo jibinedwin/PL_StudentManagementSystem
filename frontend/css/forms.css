@@ -1,0 +1,355 @@
+/* ==========================================================================
+   CSS/FORMS.CSS - Form controls, input groups, form cards, validation states
+   ========================================================================== */
+
+.form-card {
+  background-color: hsla(220, 45%, 8%, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid hsla(0, 0%, 100%, 0.15);
+  border-radius: 1rem;
+  padding: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  max-width: 800px;
+  margin: 0 auto 30px auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-grid.single-col {
+  grid-template-columns: 1fr;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: hsla(0, 0%, 100%, 0.85);
+}
+
+.form-group label .required {
+  color: #ef5350;
+  margin-left: 2px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 11px 14px;
+  background: hsla(0, 0%, 100%, 0.07);
+  border: 1px solid hsla(0, 0%, 100%, 0.16);
+  border-radius: 0.6rem;
+  font-size: 14px;
+  color: #ffffff;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: hsla(0, 0%, 100%, 0.45);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  background: hsla(0, 0%, 100%, 0.12);
+  border-color: #64b5f6;
+  box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.2);
+}
+
+.form-group select {
+  background-color: hsla(220, 45%, 12%, 0.95);
+  cursor: pointer;
+}
+
+.form-group select option {
+  background-color: #0d1b38;
+  color: #ffffff;
+}
+
+.form-group input[readonly],
+.form-group input[disabled] {
+  background: hsla(0, 0%, 100%, 0.03);
+  border-color: hsla(0, 0%, 100%, 0.08);
+  color: hsla(0, 0%, 100%, 0.6);
+  cursor: not-allowed;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 85px;
+}
+
+.form-group .form-help {
+  font-size: 12px;
+  color: hsla(0, 0%, 100%, 0.55);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid hsla(0, 0%, 100%, 0.12);
+}
+
+/* Modals (if needed for quick dialogs) */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  color-scheme: dark; /* Dark native date pickers, selects, scrollbars */
+  background-color: hsla(220, 45%, 10%, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid hsla(0, 0%, 100%, 0.16);
+  border-radius: 1.25rem;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 24px rgba(100, 181, 246, 0.15);
+  overflow: hidden;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+}
+
+.modal-header {
+  padding: 16px 22px;
+  background: hsla(220, 45%, 14%, 0.75);
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.12);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.close-btn {
+  background: hsla(0, 0%, 100%, 0.08);
+  border: 1px solid hsla(0, 0%, 100%, 0.15);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  color: hsla(0, 0%, 100%, 0.8);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(239, 83, 80, 0.3);
+  color: #ff6b6b;
+  border-color: rgba(239, 83, 80, 0.5);
+}
+
+.modal-body {
+  padding: 22px;
+  overflow-y: auto;
+}
+
+/* View Details modal body (student details) */
+.details-body {
+  padding: 22px;
+  overflow-y: auto;
+}
+
+.details-body .details-grid {
+  gap: 14px;
+}
+
+.details-body code {
+  background: hsla(0, 0%, 100%, 0.08);
+  border: 1px solid hsla(0, 0%, 100%, 0.12);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 13px;
+  color: #90caf9;
+}
+
+/* Modal Forms: padding, scrollable body, full-width footer bar */
+.modal-content form {
+  padding: 22px;
+  overflow-y: auto;
+}
+
+.modal-content form .modal-footer {
+  /* Stretch footer across the full modal width (cancels form padding) */
+  margin: 8px -22px -22px;
+}
+
+.modal-content form > .form-group:last-of-type {
+  margin-bottom: 4px;
+}
+
+/* Two-column field rows (Add / Edit Student modal) */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-row .form-group {
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   STUDENT PHOTO UPLOAD (Add/Edit Student modal)
+   ========================================================================== */
+.photo-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.photo-preview,
+.photo-preview-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(100, 181, 246, 0.6);
+  box-shadow: 0 0 10px rgba(100, 181, 246, 0.35);
+  background: hsla(220, 45%, 20%, 0.6);
+}
+
+.photo-preview-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(100, 181, 246, 0.7);
+  font-size: 26px;
+}
+
+.photo-upload-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.photo-upload-controls input[type="file"] {
+  font-size: 12.5px;
+  color: hsla(0, 0%, 100%, 0.75);
+}
+
+.photo-upload-controls input[type="file"]::file-selector-button {
+  background: rgba(100, 181, 246, 0.2);
+  color: #64b5f6;
+  border: 1px solid rgba(100, 181, 246, 0.4);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+
+.photo-upload-controls input[type="file"]::file-selector-button:hover {
+  background: rgba(100, 181, 246, 0.35);
+}
+
+/* Photo shown inside the View Student Details modal */
+.photo-detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.photo-detail-span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+}
+
+.photo-detail-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(100, 181, 246, 0.6);
+  box-shadow: 0 0 10px rgba(100, 181, 246, 0.35);
+}
+
+/* Wide modal variant (View Student Details dialog) */
+.modal-content.wide-modal {
+  max-width: min(960px, 94vw);
+}
+
+/* Wider detail tiles + larger text inside the wide details modal */
+.wide-modal .details-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.wide-modal .detail-item {
+  padding: 20px 22px;
+}
+
+.wide-modal .detail-item strong {
+  font-size: 12px;
+}
+
+.wide-modal .detail-item span {
+  font-size: 16.5px;
+}
+
+/* Compact modal variant (course dialog) */
+.modal-content.small-modal {
+  max-width: 440px;
+}
+
+.modal-content.small-modal .form-group {
+  margin-bottom: 16px;
+}
+
+.modal-footer {
+  padding: 14px 22px;
+  border-top: 1px solid hsla(0, 0%, 100%, 0.12);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background-color: hsla(220, 45%, 12%, 0.6);
+}

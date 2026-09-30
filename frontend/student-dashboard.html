@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Portal - Dashboard</title>
+  <link rel="stylesheet" href="css/layout.css?v=2" />
+  <link rel="stylesheet" href="css/components.css?v=2" />
+  <link rel="stylesheet" href="css/dashboard.css?v=12" />
+  <link rel="stylesheet" href="css/student-dashboard.css?v=10" />
+  <link rel="stylesheet" href="css/responsive.css?v=2" />
+  <!-- Remix Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+  <!-- Boxicons for legacy icons -->
+  <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="dashboard-body">
+  <!-- Background Image for Glass Look -->
+  <img src="assets/img/mountain-bg.png" alt="background" class="image-bg" />
+
+  <!-- Glass Top Header -->
+  <header class="header">
+    <div class="header__container">
+      <a href="#" class="header__logo">
+        <img src="assets/img/student-logo.jpg" alt="Student Portal Logo" class="admin-logo-img" />
+        <span>Student Portal</span>
+      </a>
+
+      <button class="header__toggle" id="header-toggle" aria-label="Toggle sidebar">
+        <i class="ri-menu-line"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Responsive Glass Sidebar for Student -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar__container">
+      <div class="sidebar__logo">
+        <img src="assets/img/student-logo.jpg" alt="Student Portal Logo" class="admin-logo-img" />
+        <span>Student Portal</span>
+      </div>
+
+      <div class="sidebar__content">
+        <!-- Dashboard Link -->
+        <a href="javascript:void(0)" class="sidebar__link active" id="studentNavDashboard" onclick="switchStudentSection('dashboard')">
+          <i class="ri-dashboard-horizontal-line"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <!-- Academics Link -->
+        <a href="javascript:void(0)" class="sidebar__link" id="studentNavAcademics" onclick="switchStudentSection('academics')">
+          <i class="ri-book-open-line"></i>
+          <span>Academics</span>
+        </a>
+
+        <!-- Personal Info Link -->
+        <a href="javascript:void(0)" class="sidebar__link" id="studentNavPersonal" onclick="switchStudentSection('personal')">
+          <i class="ri-user-line"></i>
+          <span>Personal Info</span>
+        </a>
+
+        <!-- Security Link -->
+        <a href="javascript:void(0)" class="sidebar__link" id="studentNavSecurity" onclick="switchStudentSection('security')">
+          <i class="ri-shield-keyhole-line"></i>
+          <span>Security</span>
+        </a>
+      </div>
+
+      <!-- Sidebar Bottom / Footer -->
+      <div class="sidebar__footer">
+        <div class="sidebar__profile">
+          <i class="ri-user-3-line"></i>
+          <span class="admin-name" id="sidebarStudentName">Student</span>
+        </div>
+        <button class="sidebar__logout" onclick="logout()">
+          <i class="ri-logout-box-r-line"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <div class="main-wrapper">
+    <main class="container">
+      <!-- SECTION 0: STUDENT DASHBOARD (OVERVIEW) -->
+      <div id="studentDashboardSection">
+        <section class="welcome-banner welcome-banner-center">
+          <div class="welcome-text">
+            <h1 id="welcomeTitle">Welcome, Student!</h1>
+            <p id="welcomeSubtitle">Welcome to your Student Management Portal dashboard.</p>
+          </div>
+        </section>
+
+        <!-- Quick Summary Cards -->
+        <div class="cards-grid" style="margin-top: 25px;">
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3><img src="assets/img/acadamic-logo.jpg" alt="Academic Overview" /> Academic Overview</h3>
+              <button class="btn btn-sm btn-outline-dark" onclick="switchStudentSection('academics')">View Academics</button>
+            </div>
+            <div class="panel-content">
+              <div class="details-grid">
+                <div class="info-tile">
+                  <span class="title">Enrolled Course</span>
+                  <strong id="dashQuickCourse">N/A</strong>
+                </div>
+                <div class="info-tile">
+                  <span class="title">Enrollment Status</span>
+                  <strong id="dashQuickStatus">Active Student</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3>👤 Profile Overview</h3>
+              <button class="btn btn-sm btn-outline-dark" onclick="switchStudentSection('personal')">View Profile</button>
+            </div>
+            <div class="panel-content">
+              <div class="details-grid">
+                <div class="info-tile">
+                  <span class="title">Student ID</span>
+                  <strong id="dashQuickId">STD-0000</strong>
+                </div>
+                <div class="info-tile">
+                  <span class="title">Admission Date</span>
+                  <strong id="dashQuickAdmission">N/A</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 1: ACADEMICS SECTION (ONLY ACADEMIC INFORMATION) -->
+      <div id="studentAcademicsSection" style="display: none;">
+        <section class="welcome-banner" style="margin-bottom: 25px;">
+          <div class="welcome-text">
+            <h1>Academic Information</h1>
+            <p>Your current enrollment status and degree details.</p>
+          </div>
+          <div class="welcome-badge">
+            <span id="badgeStatus" class="status-pill status-active">Active</span>
+          </div>
+        </section>
+
+        <div class="panel-card single-panel">
+          <div class="details-section">
+            <h3><img src="assets/img/acadamic-logo.jpg" alt="Academic Details" /> Academic Details</h3>
+            <div class="details-grid">
+              <div class="info-tile">
+                <span class="title">Enrolled Course</span>
+                <strong id="detailCourse">N/A</strong>
+              </div>
+              <div class="info-tile">
+                <span class="title">Student ID</span>
+                <strong id="detailStudentId">N/A</strong>
+              </div>
+              <div class="info-tile">
+                <span class="title">Admission Date</span>
+                <strong id="detailAdmission">N/A</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2.5: SECURITY SECTION (ACCOUNT PASSWORD MANAGEMENT) -->
+      <div id="studentSecuritySection" style="display: none;">
+        <section class="welcome-banner" style="margin-bottom: 25px;">
+          <div class="welcome-text">
+            <h1>Security</h1>
+            <p>Protect your account by keeping a strong, private password.</p>
+          </div>
+        </section>
+
+        <div class="panel-card single-panel">
+          <div class="details-section">
+            <h3>🔒 Change Account Password</h3>
+            <form id="securityPasswordForm" class="security-form" onsubmit="handleStudentPasswordSubmit(event)">
+              <div class="form-group">
+                <label for="secCurrentPassword">Current Password *</label>
+                <input type="password" id="secCurrentPassword" placeholder="Enter your current password" required autocomplete="current-password" />
+              </div>
+              <div class="form-group">
+                <label for="secNewPassword">New Password *</label>
+                <input type="password" id="secNewPassword" placeholder="Enter new password (min 6 characters)" required minlength="6" autocomplete="new-password" />
+              </div>
+              <div class="form-group">
+                <label for="secConfirmPassword">Confirm New Password *</label>
+                <input type="password" id="secConfirmPassword" placeholder="Re-enter new password" required minlength="6" autocomplete="new-password" />
+              </div>
+              <div class="security-form-actions">
+                <button type="button" class="btn btn-secondary" onclick="resetSecurityForm()">Reset</button>
+                <button type="submit" class="btn btn-primary" id="secSaveBtn">Update Password</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: PERSONAL INFO SECTION (ONLY PERSONAL INFORMATION) -->
+      <div id="studentPersonalSection" style="display: none;">
+        <section class="welcome-banner" style="margin-bottom: 25px;">
+          <div class="welcome-text">
+            <h1>Personal Information</h1>
+            <p>Your identity, contact, and profile details.</p>
+          </div>
+        </section>
+
+        <div class="dashboard-grid">
+          <!-- Profile Card -->
+          <div class="profile-card">
+            <div class="avatar-circle" id="avatarInitials">ST</div>
+            <h2 id="cardFullName">Student Name</h2>
+            <p class="student-id-tag" id="cardStudentId">STD-0000</p>
+          </div>
+
+          <!-- Personal Info Tile Grid -->
+          <div class="info-container">
+            <div class="details-section">
+              <h3>👤 Personal Details</h3>
+              <div class="details-grid">
+                <div class="info-tile">
+                  <span class="title">Full Name</span>
+                  <strong id="detailFullName">N/A</strong>
+                </div>
+                <div class="info-tile">
+                  <span class="title">Gender</span>
+                  <strong id="detailGender">N/A</strong>
+                </div>
+                <div class="info-tile">
+                  <span class="title">Email Address</span>
+                  <strong id="detailEmail">N/A</strong>
+                </div>
+                <div class="info-tile">
+                  <span class="title">Mobile Number</span>
+                  <strong id="detailPhone">N/A</strong>
+                </div>
+                <div class="info-tile">
+                  <span class="title">Date of Birth</span>
+                  <strong id="detailDob">N/A</strong>
+                </div>
+                <div class="info-tile">
+                  <span class="title">Residential Address</span>
+                  <strong id="detailAddress">N/A</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div> <!-- /.main-wrapper -->
+
+  <script src="assets/js/api.js?v=4"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/common.js?v=2"></script>
+  <script src="js/student-dashboard.js?v=5"></script>
+</body>
+</html>
