@@ -56,8 +56,8 @@ Edit `backend/.env`:
 SECRET_KEY=change_me
 DB_HOST=localhost
 DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=root
+DB_USER=your_username
+DB_PASSWORD=your_password
 DB_NAME=student_management_system
 ```
 
