@@ -41,9 +41,9 @@ SECRET_KEY=sms_super_secret_session_key_2026
 
 DB_HOST=localhost
 DB_PORT=3306
-DB_USER=your_user_id
+DB_USER=your_username
 DB_PASSWORD=your_password
-DB_NAME=student_management_system
+DB_NAME=PL_SMS
 ```
 
 ---
